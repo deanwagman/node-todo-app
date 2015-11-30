@@ -50,6 +50,20 @@ app.get('/todos/:id', function(request, response) {
 	}
 });
 
+// DELETE - /todos/:id
+app.delete('/todos/:id', function(request, response) {
+	var theID = parseInt(request.params.id, 10);
+	var todo = todos.find((todo) => todo.id === theID);
+	var filteredTodos = todos.filter((todo) => todo.id !== theID);
+
+	if (todo && filteredTodos) {
+		todos = filteredTodos;
+		response.json(todo);
+	} else {
+		response.status(404).send();
+	}
+});
+
 app.listen(PORT, function() {
 	console.log(`listening on port: ${PORT}`);
 });
