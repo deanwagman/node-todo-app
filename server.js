@@ -18,10 +18,16 @@ app.get('/todos', function(request, response) {
 	var queryParams = request.query;
 	var localTodos = todos;
 
+	// Filtering by Completed
 	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
 		localTodos = localTodos.filter((todo) => todo.completed === true);
 	} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
 		localTodos = localTodos.filter((todo) => todo.completed === false);
+	}
+
+	// Searching
+	if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+		localTodos = localTodos.filter((todo) => todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1);
 	}
 
 	response.json(localTodos);
