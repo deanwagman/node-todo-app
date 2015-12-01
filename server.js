@@ -15,7 +15,16 @@ app.get('/', function(request, response) {
 
 // GET - /todos
 app.get('/todos', function(request, response) {
-	response.json(todos);
+	var queryParams = request.query;
+	var localTodos = todos;
+
+	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
+		localTodos = localTodos.filter((todo) => todo.completed === true);
+	} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
+		localTodos = localTodos.filter((todo) => todo.completed === false);
+	}
+
+	response.json(localTodos);
 });
 
 // POST
