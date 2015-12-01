@@ -31,7 +31,7 @@ app.post('/todos', function(request, response) {
 		description: body.description.trim(),
 		completed: body.completed,
 		id: todoNextId++
-	}
+	};
 
 	todos.push(todo);
 
@@ -62,6 +62,34 @@ app.delete('/todos/:id', function(request, response) {
 	} else {
 		response.status(404).send();
 	}
+});
+
+app.put('/todos/:id', function(request, response) {
+	var body = request.body;
+	var updatedValues = {};
+	var theID = parseInt(request.params.id, 10);
+	var todo = todos.find((todo) => todo.id === theID);
+
+	if (body.hasOwnProperty('completed') && typeof body.completed === 'boolean') {
+		updatedValues.completed = body.completed;
+	} else if (body.hasOwnProperty('completed')) {
+		return response.status(400).json({"error": "Invalid Data"});
+	}
+
+	if (body.hasOwnProperty('description') && typeof body.description.trim() === 'string' && body.description.trim().length > 0) {
+		updatedValues.description = body.description.trim();
+	} else if (body.hasOwnProperty('description')) {
+		return response.status(400).json({"error": "Invalid Syntax"});
+	}
+
+	if (!todo) {
+		return response.status(404).json({"error": `The todo with id: ${theID}`});
+	}
+
+	todo = Object.assign(todo, updatedValues);
+
+	response.json(todo);
+
 });
 
 app.listen(PORT, function() {
